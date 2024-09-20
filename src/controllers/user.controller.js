@@ -15,16 +15,16 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 // return res
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { fullName, email, userName, password } = req.body;
+  const { fullName, email, username, password } = req.body;
 
   if (
-    [fullName, email, userName, password].some((field) => field?.trim() === "")
+    [fullName, email, username, password].some((field) => field?.trim() === "")
   ) {
     throw new ApiError(400, "All fields are required");
   }
 
   const existedUSer = await User.findOne({
-    $or: [{ userName }, { email }],
+    $or: [{ username }, { email }],
   });
 
   if (existedUSer) {
@@ -42,9 +42,9 @@ const registerUser = asyncHandler(async (req, res) => {
   ) {
     coverImageLocalPath = req.files.coverImage[0].path;
   }
-    if (!avatarLocalPath) {
-      throw new ApiError(400, "Avatar file is required");
-    }
+  if (!avatarLocalPath) {
+    throw new ApiError(400, "Avatar file is required");
+  }
 
   const avatar = await uploadOnCloudinary(avatarLocalPath);
   const coverImage = await uploadOnCloudinary(coverImageLocalPath);
@@ -57,7 +57,7 @@ const registerUser = asyncHandler(async (req, res) => {
     fullName,
     avatar: avatar.url,
     coverImage: coverImage?.url || "",
-    userName: userName.toLowerCase(),
+    username: username.toLowerCase(),
     email,
     password,
   });
